@@ -5,6 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>طريقك لبناء Startup — محمد حميدة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Meta Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '991546742859583');
+  fbq('track', 'PageView');
+</script>
+<noscript>
+  <img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=991546742859583&ev=PageView&noscript=1"/>
+</noscript>
+<!-- End Meta Pixel Code -->
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -749,7 +769,8 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
           <div class="perk"><span class="perk-ic">↩️</span> ضمان استرداد 7 أيام</div>
         </div>
         <a href="#order" class="btn-gold">📦 اطلب نسختك الآن</a>
-        <a href="https://readtolead.store/cart/43103533105257:1?checkout" class="btn-dark">🛒 ادفع أونلاين عبر المتجر</a>
+        <!-- InitiateCheckout fires when user clicks online pay from hero -->
+        <a href="https://readtolead.store/cart/43103533105257:1?checkout" class="btn-dark" onclick="fbq('track','InitiateCheckout',{value:600,currency:'EGP'})">🛒 ادفع أونلاين عبر المتجر</a>
       </div>
     </div>
   </div>
@@ -982,12 +1003,14 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
             <div class="err-msg" id="e-gov">من فضلك اختر المحافظة</div>
           </div>
           <div class="field"><label for="f-addr"><span class="req">*</span> العنوان التفصيلي</label><textarea id="f-addr" placeholder="مثال: شارع 9، بجوار مسجد النور، عمارة 15، شقة 3"></textarea><div class="err-msg" id="e-addr">من فضلك ادخل عنوانك بالتفصيل</div></div>
+          <!-- Purchase event fires on valid COD form submit -->
           <button class="submit-btn" id="f-sub">
             <div class="spinner" id="f-spin"></div>
             <span id="f-txt">📦 تأكيد الطلب — دفع عند الاستلام</span>
           </button>
           <div class="form-or"><span>أو</span></div>
-          <a href="https://readtolead.store/cart/43103533105257:1?checkout" class="btn-outline">🛒 ادفع أونلاين عبر المتجر</a>
+          <!-- InitiateCheckout fires on online pay click from order section -->
+          <a href="https://readtolead.store/cart/43103533105257:1?checkout" class="btn-outline" onclick="fbq('track','InitiateCheckout',{value:600,currency:'EGP'})">🛒 ادفع أونلاين عبر المتجر</a>
           <p class="form-note">🔒 بياناتك آمنة تماماً · سيتواصل معك فريقنا خلال ساعات</p>
         </div>
       </div>
@@ -1037,6 +1060,9 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
       chk('f-gov','e-gov',function(v){return v!==''})&
       chk('f-addr','e-addr',function(v){return v.length>=10});
     if(!valid) return;
+
+    // ── Meta Pixel: Purchase event ──
+    fbq('track', 'Purchase', {value: 600, currency: 'EGP'});
 
     var btn=this;
     btn.disabled=true;
