@@ -1099,7 +1099,9 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
       gov:     document.getElementById('f-gov').value,
       address: document.getElementById('f-addr').value.trim(),
       product: 'طريقك لبناء Startup',
-      price:   '600 جنيه'
+      price:   '600 جنيه',
+      shipping: shipping + ' جنيه',
+      total:   (600 + shipping) + ' جنيه'
     };
 
     fetch(SHEET_URL, {
