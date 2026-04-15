@@ -734,7 +734,7 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
 <div class="topbar">
   <div class="topbar-inner">
     <span class="topbar-dot"></span>
-    🔥 عرض محدود — <b>600 جنيه بدلاً من 1,000 جنيه</b> · الشحن مجاني لكل المحافظات
+    🔥 عرض محدود — <b>600 جنيه بدلاً من 1,000 جنيه</b> · 🚚 توصيل 90 ج القاهرة والجيزة · 100 ج باقي المحافظات
     <span class="topbar-dot"></span>
   </div>
 </div>
@@ -765,7 +765,7 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
         <div class="perks">
           <div class="perk"><span class="perk-ic">📦</span> نسخة ورقية +500 صفحة</div>
           <div class="perk"><span class="perk-ic">🎁</span> 3 أدوات رقمية مجانية</div>
-          <div class="perk"><span class="perk-ic">🚚</span> شحن مجاني لكل المحافظات</div>
+          <div class="perk"><span class="perk-ic">🚚</span> توصيل 90 ج القاهرة والجيزة · 100 ج باقي المحافظات</div>
           <div class="perk"><span class="perk-ic">↩️</span> ضمان استرداد 7 أيام</div>
         </div>
         <a href="#order" class="btn-gold">📦 اطلب نسختك الآن</a>
@@ -782,7 +782,7 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
   <div class="rib-sep"></div>
   <div class="rib-item">📦 <strong>+500 نسخة</strong><span>تم بيعها</span></div>
   <div class="rib-sep"></div>
-  <div class="rib-item">🚚 <strong>شحن مجاني</strong><span>لكل المحافظات</span></div>
+  <div class="rib-item">🚚 <strong>توصيل سريع</strong><span>90-100 جنيه</span></div>
   <div class="rib-sep"></div>
   <div class="rib-item">🔒 <strong>دفع آمن</strong><span>عند الاستلام</span></div>
   <div class="rib-sep"></div>
@@ -960,9 +960,9 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
       </div>
       <div class="total-card">
         <div class="total-row"><span>سعر الكتاب</span><span class="total-val">600 جنيه</span></div>
-        <div class="total-row"><span>الشحن والتوصيل</span><span class="total-val total-free">مجاني 🎉</span></div>
+        <div class="total-row"><span>الشحن والتوصيل</span><span class="total-val" id="summary-shipping">اختر المحافظة</span></div>
         <div class="total-row"><span>الأدوات الرقمية (3 أدوات)</span><span class="total-val total-free">مجاني 🎁</span></div>
-        <div class="total-final"><span>الإجمالي</span><span class="total-final-val">600 جنيه</span></div>
+        <div class="total-final"><span>الإجمالي</span><span class="total-final-val" id="summary-total">600 جنيه</span></div>
       </div>
       <div class="cod-box">
         <div class="cod-ic">💵</div>
@@ -1042,6 +1042,28 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
 (function(){
   var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwZv3f324zLsSzuqZ2IUuv19hm-WINpmWllBzhQ6Q25jV_hGpoRHD2QuMPaNhpo7a5m1Q/exec';
 
+  // ── Shipping cost logic ──
+  var CAIRO_GIZA = ['القاهرة','الجيزة'];
+  function getShipping(gov){
+    return CAIRO_GIZA.indexOf(gov) !== -1 ? 90 : 100;
+  }
+  function updateShippingSummary(){
+    var gov = document.getElementById('f-gov').value;
+    var shippingEl = document.getElementById('summary-shipping');
+    var totalEl = document.getElementById('summary-total');
+    if(!gov){
+      shippingEl.textContent = 'اختر المحافظة';
+      shippingEl.className = 'total-val';
+      totalEl.textContent = '600 جنيه';
+    } else {
+      var ship = getShipping(gov);
+      shippingEl.textContent = ship + ' جنيه';
+      shippingEl.className = 'total-val';
+      totalEl.textContent = (600 + ship) + ' جنيه';
+    }
+  }
+  document.getElementById('f-gov').addEventListener('change', updateShippingSummary);
+
   document.getElementById('f-phone').addEventListener('input',function(){
     this.value=this.value.replace(/\D/g,'');
   });
@@ -1062,7 +1084,9 @@ h2.sec-title{font-size:clamp(2.1rem,3vw,3rem)!important}
     if(!valid) return;
 
     // ── Meta Pixel: Purchase event ──
-    fbq('track', 'Purchase', {value: 600, currency: 'EGP'});
+    var govVal = document.getElementById('f-gov').value;
+    var shipping = getShipping(govVal);
+    fbq('track', 'Purchase', {value: 600 + shipping, currency: 'EGP'});
 
     var btn=this;
     btn.disabled=true;
